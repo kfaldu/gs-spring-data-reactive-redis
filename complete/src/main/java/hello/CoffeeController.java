@@ -30,7 +30,7 @@ public class CoffeeController {
     Mono<Coffee> coffeeMono = coffeTemplate.keys(id)
         .flatMap(coffeTemplate.opsForValue()::get).next();
     long end = System.nanoTime();
-    log.info("toal nano time "+ (end - start));
+    log.info("toal nano time " + (end - start));
     return coffeeMono;
   }
 }
