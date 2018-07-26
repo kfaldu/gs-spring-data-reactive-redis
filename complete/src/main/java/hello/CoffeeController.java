@@ -21,7 +21,7 @@ public class CoffeeController {
   @GetMapping("/coffees")
   public Flux<Coffee> all() {
     return coffeTemplate.keys("*")
-        .flatMap(coffeTemplate.opsForValue()::get);
+        .flatMap(coffeTemplate.opsForValue()::get).take(5);
   }
 
   @GetMapping("/coffee/{id}")
