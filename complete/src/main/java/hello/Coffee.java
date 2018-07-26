@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Coffee {
-    private String id;
-    private String name;
+
+  // not using UUID for purpose
+  // we will have to create a uuid serializer
+  // when we query from redis template - we will have to query for specific UUID
+  // we will not be able to query by "*"
+  private String id;
+  private String name;
 }
