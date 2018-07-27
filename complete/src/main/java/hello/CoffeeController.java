@@ -1,7 +1,10 @@
 package hello;
 
+import java.nio.ByteBuffer;
 import lombok.extern.java.Log;
+import org.springframework.data.redis.connection.ReactiveKeyCommands;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.util.ByteUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,9 +16,16 @@ import reactor.core.publisher.Mono;
 public class CoffeeController {
 
   private final ReactiveRedisTemplate<String, Coffee> coffeTemplate;
+  private final ReactiveKeyCommands keyCommands;
 
-  CoffeeController(ReactiveRedisTemplate<String, Coffee> coffeeOps) {
+  CoffeeController(ReactiveRedisTemplate<String, Coffee> coffeeOps,
+      ReactiveKeyCommands keyCommands) {
     this.coffeTemplate = coffeeOps;
+    this.keyCommands = keyCommands;
+  }
+
+  private static String toString(ByteBuffer byteBuffer) {
+    return new String(ByteUtils.getBytes(byteBuffer));
   }
 
   @GetMapping("/coffees")
@@ -27,6 +37,9 @@ public class CoffeeController {
 
   @GetMapping("/coffee/{id}")
   public Mono<Coffee> findOne(@PathVariable String id) {
+
+    log.info(toString(keyCommands.randomKey().block()));
+
     long start = System.nanoTime();
     Mono<Coffee> coffeeMono = coffeTemplate.keys(id)
         .flatMap(coffeTemplate.opsForValue()::get).next();

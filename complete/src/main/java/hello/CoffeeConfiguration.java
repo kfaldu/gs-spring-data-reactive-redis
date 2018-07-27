@@ -2,6 +2,7 @@ package hello;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.ReactiveKeyCommands;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -26,6 +27,11 @@ public class CoffeeConfiguration {
         .build();
 
     return new ReactiveRedisTemplate<>(factory, serializationContext);
+  }
+
+  @Bean
+  ReactiveKeyCommands reactiveKeyCommands(ReactiveRedisConnectionFactory factory) {
+    return factory.getReactiveConnection().keyCommands();
   }
 
 }
