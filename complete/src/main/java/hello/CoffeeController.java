@@ -28,7 +28,13 @@ public class CoffeeController {
     return new String(ByteUtils.getBytes(byteBuffer));
   }
 
-  @GetMapping("/coffees")
+  @GetMapping("/coffee/random")
+  public Mono<Coffee> findRandom() {
+    String randomKey = toString(keyCommands.randomKey().block());
+    log.info("RandomKey: " + randomKey);
+    return findOne(randomKey);
+  }
+
   public Flux<Coffee> all() {
     return coffeTemplate.keys("*")
         .take(5)
@@ -37,8 +43,6 @@ public class CoffeeController {
 
   @GetMapping("/coffee/{id}")
   public Mono<Coffee> findOne(@PathVariable String id) {
-
-    log.info(toString(keyCommands.randomKey().block()));
 
     long start = System.nanoTime();
     Mono<Coffee> coffeeMono = coffeTemplate.keys(id)
